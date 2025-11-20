@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TahlilchiAI RAG System - Test Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .config {
+            background: #fffbea;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .config h3 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .config input {
+            padding: 8px;
+            border: 1px solid #d97706;
+            border-radius: 5px;
+            margin-right: 10px;
+            width: 250px;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .section-content {
+            margin-top: 15px;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button.secondary {
+            background: #10b981;
+        }
+
+        button.secondary:hover {
+            background: #059669;
+        }
+
+        button.danger {
+            background: #ef4444;
+        }
+
+        button.danger:hover {
+            background: #dc2626;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            transition: border 0.3s;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .response {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .response.error {
+            background: #fee;
+            border-left-color: #ef4444;
+        }
+
+        .response.success {
+            background: #f0fdf4;
+            border-left-color: #10b981;
+        }
+
+        .response pre {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .message.user {
+            background: #dbeafe;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .message.assistant {
+            background: #f3e8ff;
+            border-left: 4px solid #a855f7;
+        }
+
+        .message-meta {
+            font-size: 11px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        .citations {
+            background: #fffbea;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .badge.high {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge.medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.low {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🤖 TahlilchiAI RAG System</h1>
+            <p>Comprehensive Testing Interface for Uzbekistan Legal Document Analysis</p>
+        </div>
+
+        <!-- Configuration -->
+        <div class="config">
+            <h3>⚙️ Configuration</h3>
+            <label>Backend API URL:</label>
+            <input type="text" id="apiUrl" value="http://localhost:8000/api/v1" />
+            <label>Tenant ID:</label>
+            <input type="text" id="tenantId" placeholder="Generate new or paste existing" />
+            <button onclick="generateTenantId()">Generate New</button>
+            <label>User ID:</label>
+            <input type="text" id="userId" placeholder="Generate new or paste existing" />
+            <button onclick="generateUserId()">Generate New</button>
+        </div>
+
+        <!-- Section 1: Chat Management -->
+        <div class="section">
+            <h2>1️⃣ Chat Management</h2>
+            <div class="section-content">
+                <div class="form-row">
+                    <div>
+                        <label>Chat Name:</label>
+                        <input type="text" id="chatName" placeholder="e.g., HR Policy Assistant" value="Test Legal Assistant" />
+                    </div>
+                    <div>
+                        <label>Purpose:</label>
+                        <select id="chatPurpose">
+                            <option value="policy_qa">Policy Q&A</option>
+                            <option value="hr_assistant">HR Assistant</option>
+                            <option value="sop_helper">SOP Helper</option>
+                            <option value="product_docs">Product Docs</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label>Tone:</label>
+                        <select id="chatTone">
+                            <option value="simple_uzbek">Simple Uzbek</option>
+                            <option value="technical_russian">Technical Russian</option>
+                            <option value="formal_english">Formal English</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Strictness:</label>
+                        <select id="chatStrictness">
+                            <option value="strict_docs_only">Strict (Docs Only)</option>
+                            <option value="allow_reasoning">Allow Reasoning</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="createChat()">Create Chat</button>
+                <button class="secondary" onclick="listChats()">List My Chats</button>
+
+                <div class="loading" id="chatLoading">
+                    <div class="spinner"></div>
+                    <p>Processing...</p>
+                </div>
+                <div id="chatResponse"></div>
+            </div>
+        </div>
+
+        <!-- Section 2: Document Management -->
+        <div class="section">
+            <h2>2️⃣ Document Upload & Processing</h2>
+            <div class="section-content">
+                <label>Chat ID (from above):</label>
+                <input type="text" id="docChatId" placeholder="Paste chat ID here" />
+
+                <label>Select Document (PDF/DOCX):</label>
+                <input type="file" id="documentFile" accept=".pdf,.docx,.doc" />
+
+                <button onclick="uploadDocument()">Upload Document</button>
+                <button class="secondary" onclick="processAndIndex()">Process & Index Document</button>
+                <button class="secondary" onclick="listDocuments()">List Documents</button>
+
+                <div class="loading" id="docLoading">
+                    <div class="spinner"></div>
+                    <p>Processing...</p>
+                </div>
+                <div id="docResponse"></div>
+            </div>
+        </div>
+
+        <!-- Section 3: Query Testing -->
+        <div class="section">
+            <h2>3️⃣ Query & Retrieval Testing</h2>
+            <div class="section-content">
+                <label>Chat ID:</label>
+                <input type="text" id="queryChatId" placeholder="Paste chat ID here" />
+
+                <label>Your Question:</label>
+                <textarea id="queryText" placeholder="e.g., What are the payment terms? / To'lov shartlari qanday?">What is this document about?</textarea>
+
+                <label>Retrieval Mode:</label>
+                <select id="retrievalMode">
+                    <option value="hybrid">Hybrid (Recommended)</option>
+                    <option value="dense_only">Dense Only (Vector)</option>
+                    <option value="sparse_only">Sparse Only (BM25)</option>
+                    <option value="graph_enhanced">Graph Enhanced</option>
+                </select>
+
+                <button onclick="testRetrieval()">Test Retrieval Only</button>
+                <button class="secondary" onclick="generateAnswer()">Generate Answer</button>
+                <button class="secondary" onclick="testRouter()">Test Router Decision</button>
+
+                <div class="loading" id="queryLoading">
+                    <div class="spinner"></div>
+                    <p>Processing query...</p>
+                </div>
+                <div id="queryResponse"></div>
+            </div>
+        </div>
+
+        <!-- Section 4: Conversation Testing -->
+        <div class="section">
+            <h2>4️⃣ Multi-Turn Conversation</h2>
+            <div class="section-content">
+                <label>Chat ID:</label>
+                <input type="text" id="convChatId" placeholder="Paste chat ID here" />
+
+                <button onclick="createConversation()">Start New Conversation</button>
+                <button class="secondary" onclick="listConversations()">List Conversations</button>
+
+                <div style="margin-top: 20px;">
+                    <label>Conversation ID:</label>
+                    <input type="text" id="conversationId" placeholder="Will auto-fill after creation" />
+
+                    <label>Your Message:</label>
+                    <textarea id="conversationMessage" placeholder="Type your message..."></textarea>
+
+                    <button onclick="sendMessage()">Send Message</button>
+                    <button class="secondary" onclick="getConversationHistory()">View History</button>
+                </div>
+
+                <div class="loading" id="convLoading">
+                    <div class="spinner"></div>
+                    <p>Processing...</p>
+                </div>
+                <div id="convResponse"></div>
+            </div>
+        </div>
+
+        <!-- Section 5: System Health -->
+        <div class="section">
+            <h2>5️⃣ System Health Checks</h2>
+            <div class="section-content">
+                <button onclick="checkHealth()">Check API Health</button>
+                <button class="secondary" onclick="checkLLMHealth()">Check LLM (Ollama)</button>
+                <button class="secondary" onclick="checkQdrant()">Check Qdrant</button>
+
+                <div id="healthResponse"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = () => document.getElementById('apiUrl').value;
+        const TENANT_ID = () => document.getElementById('tenantId').value;
+        const USER_ID = () => document.getElementById('userId').value;
+
+        let currentDocumentId = null;
+
+        // Utility functions
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        function generateTenantId() {
+            document.getElementById('tenantId').value = generateUUID();
+        }
+
+        function generateUserId() {
+            document.getElementById('userId').value = generateUUID();
+        }
+
+        function showLoading(elementId) {
+            document.getElementById(elementId).classList.add('active');
+        }
+
+        function hideLoading(elementId) {
+            document.getElementById(elementId).classList.remove('active');
+        }
+
+        function showResponse(elementId, data, isError = false) {
+            const el = document.getElementById(elementId);
+            const className = isError ? 'error' : 'success';
+            el.innerHTML = `
+                <div class="response ${className}">
+                    <strong>${isError ? '❌ Error' : '✅ Success'}</strong>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        async function apiCall(endpoint, method = 'GET', body = null, isFormData = false) {
+            const url = `${API_BASE()}${endpoint}`;
+            const options = {
+                method,
+                headers: isFormData ? {} : { 'Content-Type': 'application/json' }
+            };
+
+            if (body) {
+                options.body = isFormData ? body : JSON.stringify(body);
+            }
+
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Request failed');
+                }
+
+                return { success: true, data };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Section 1: Chat Management
+        async function createChat() {
+            showLoading('chatLoading');
+
+            const result = await apiCall(
+                `/chats?tenant_id=${TENANT_ID()}&user_id=${USER_ID()}`,
+                'POST',
+                {
+                    name: document.getElementById('chatName').value,
+                    purpose: document.getElementById('chatPurpose').value,
+                    target_audience: 'staff',
+                    tone: document.getElementById('chatTone').value,
+                    strictness: document.getElementById('chatStrictness').value,
+                    sensitivity: 'high_on_prem',
+                    document_types: ['policies', 'contracts'],
+                    document_languages: ['uz', 'ru', 'en']
+                }
+            );
+
+            hideLoading('chatLoading');
+
+            if (result.success) {
+                showResponse('chatResponse', result.data);
+                // Auto-fill chat IDs
+                document.getElementById('docChatId').value = result.data.id;
+                document.getElementById('queryChatId').value = result.data.id;
+                document.getElementById('convChatId').value = result.data.id;
+            } else {
+                showResponse('chatResponse', { error: result.error }, true);
+            }
+        }
+
+        async function listChats() {
+            showLoading('chatLoading');
+            const result = await apiCall(`/chats?tenant_id=${TENANT_ID()}`);
+            hideLoading('chatLoading');
+
+            if (result.success) {
+                showResponse('chatResponse', result.data);
+            } else {
+                showResponse('chatResponse', { error: result.error }, true);
+            }
+        }
+
+        // Section 2: Document Management
+        async function uploadDocument() {
+            const chatId = document.getElementById('docChatId').value;
+            const fileInput = document.getElementById('documentFile');
+
+            if (!chatId || !fileInput.files[0]) {
+                alert('Please provide chat ID and select a file');
+                return;
+            }
+
+            showLoading('docLoading');
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            const result = await apiCall(
+                `/chats/${chatId}/documents?tenant_id=${TENANT_ID()}&user_id=${USER_ID()}`,
+                'POST',
+                formData,
+                true
+            );
+
+            hideLoading('docLoading');
+
+            if (result.success) {
+                currentDocumentId = result.data.id;
+                showResponse('docResponse', result.data);
+            } else {
+                showResponse('docResponse', { error: result.error }, true);
+            }
+        }
+
+        async function processAndIndex() {
+            const chatId = document.getElementById('docChatId').value;
+
+            if (!chatId || !currentDocumentId) {
+                alert('Please upload a document first');
+                return;
+            }
+
+            showLoading('docLoading');
+
+            const result = await apiCall(
+                `/chats/${chatId}/documents/${currentDocumentId}/process-and-index?tenant_id=${TENANT_ID()}`,
+                'POST'
+            );
+
+            hideLoading('docLoading');
+
+            if (result.success) {
+                showResponse('docResponse', result.data);
+            } else {
+                showResponse('docResponse', { error: result.error }, true);
+            }
+        }
+
+        async function listDocuments() {
+            const chatId = document.getElementById('docChatId').value;
+
+            if (!chatId) {
+                alert('Please provide chat ID');
+                return;
+            }
+
+            showLoading('docLoading');
+            const result = await apiCall(`/chats/${chatId}/documents?tenant_id=${TENANT_ID()}`);
+            hideLoading('docLoading');
+
+            if (result.success) {
+                showResponse('docResponse', result.data);
+            } else {
+                showResponse('docResponse', { error: result.error }, true);
+            }
+        }
+
+        // Section 3: Query Testing
+        async function testRetrieval() {
+            const chatId = document.getElementById('queryChatId').value;
+            const query = document.getElementById('queryText').value;
+            const mode = document.getElementById('retrievalMode').value;
+
+            if (!chatId || !query) {
+                alert('Please provide chat ID and query');
+                return;
+            }
+
+            showLoading('queryLoading');
+
+            const result = await apiCall(
+                `/chats/${chatId}/retrieve?tenant_id=${TENANT_ID()}`,
+                'POST',
+                { query, mode, top_k: 10, score_threshold: 0.3 }
+            );
+
+            hideLoading('queryLoading');
+
+            if (result.success) {
+                showResponse('queryResponse', result.data);
+            } else {
+                showResponse('queryResponse', { error: result.error }, true);
+            }
+        }
+
+        async function generateAnswer() {
+            const chatId = document.getElementById('queryChatId').value;
+            const query = document.getElementById('queryText').value;
+
+            if (!chatId || !query) {
+                alert('Please provide chat ID and query');
+                return;
+            }
+
+            showLoading('queryLoading');
+
+            const result = await apiCall(
+                `/chats/${chatId}/answer?tenant_id=${TENANT_ID()}`,
+                'POST',
+                { query }
+            );
+
+            hideLoading('queryLoading');
+
+            if (result.success) {
+                const data = result.data;
+                const html = `
+                    <div class="response success">
+                        <strong>🤖 Answer Generated</strong>
+                        <div style="margin-top: 15px;">
+                            <div class="message assistant">
+                                <strong>Answer:</strong>
+                                <p>${data.answer}</p>
+                                <div class="message-meta">
+                                    Mode: ${data.retrieval_mode} | Contexts: ${data.contexts_used} | 
+                                    Confidence: <span class="badge ${data.confidence}">${data.confidence}</span>
+                                </div>
+                                ${data.citations && data.citations.length > 0 ? `
+                                    <div class="citations">
+                                        <strong>📚 Citations:</strong><br>
+                                        ${data.citations.map(c => c.text || `${c.document} (Page ${c.page})`).join('<br>')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <details style="margin-top: 10px;">
+                            <summary style="cursor: pointer;">View Raw JSON</summary>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </details>
+                    </div>
+                `;
+                document.getElementById('queryResponse').innerHTML = html;
+            } else {
+                showResponse('queryResponse', { error: result.error }, true);
+            }
+        }
+
+        async function testRouter() {
+            const chatId = document.getElementById('queryChatId').value;
+            const query = document.getElementById('queryText').value;
+
+            if (!chatId || !query) {
+                alert('Please provide chat ID and query');
+                return;
+            }
+
+            showLoading('queryLoading');
+
+            const result = await apiCall(
+                `/router/route?tenant_id=${TENANT_ID()}`,
+                'POST',
+                { query, chat_id: chatId }
+            );
+
+            hideLoading('queryLoading');
+
+            if (result.success) {
+                showResponse('queryResponse', result.data);
+            } else {
+                showResponse('queryResponse', { error: result.error }, true);
+            }
+        }
+
+        // Section 4: Conversation
+        async function createConversation() {
+            const chatId = document.getElementById('convChatId').value;
+
+            if (!chatId) {
+                alert('Please provide chat ID');
+                return;
+            }
+
+            showLoading('convLoading');
+
+            const result = await apiCall(
+                `/chats/${chatId}/conversations?tenant_id=${TENANT_ID()}&user_id=${USER_ID()}`,
+                'POST'
+            );
+
+            hideLoading('convLoading');
+
+            if (result.success) {
+                document.getElementById('conversationId').value = result.data.id;
+                showResponse('convResponse', result.data);
+            } else {
+                showResponse('convResponse', { error: result.error }, true);
+            }
+        }
+
+        async function listConversations() {
+            const chatId = document.getElementById('convChatId').value;
+
+            if (!chatId) {
+                alert('Please provide chat ID');
+                return;
+            }
+
+            showLoading('convLoading');
+            const result = await apiCall(`/chats/${chatId}/conversations?tenant_id=${TENANT_ID()}`);
+            hideLoading('convLoading');
+
+            if (result.success) {
+                showResponse('convResponse', result.data);
+            } else {
+                showResponse('convResponse', { error: result.error }, true);
+            }
+        }
+
+        async function sendMessage() {
+            const chatId = document.getElementById('convChatId').value;
+            const convId = document.getElementById('conversationId').value;
+            const message = document.getElementById('conversationMessage').value;
+
+            if (!chatId || !convId || !message) {
+                alert('Please provide chat ID, conversation ID, and message');
+                return;
+            }
+
+            showLoading('convLoading');
+
+            const result = await apiCall(
+                `/chats/${chatId}/conversations/${convId}/messages?tenant_id=${TENANT_ID()}`,
+                'POST',
+                { content: message, role: 'user' }
+            );
+
+            hideLoading('convLoading');
+
+            if (result.success) {
+                document.getElementById('conversationMessage').value = '';
+                showResponse('convResponse', result.data);
+            } else {
+                showResponse('convResponse', { error: result.error }, true);
+            }
+        }
+
+        async function getConversationHistory() {
+            const chatId = document.getElementById('convChatId').value;
+            const convId = document.getElementById('conversationId').value;
+
+            if (!chatId || !convId) {
+                alert('Please provide chat ID and conversation ID');
+                return;
+            }
+
+            showLoading('convLoading');
+            const result = await apiCall(`/chats/${chatId}/conversations/${convId}?tenant_id=${TENANT_ID()}`);
+            hideLoading('convLoading');
+
+            if (result.success) {
+                showResponse('convResponse', result.data);
+            } else {
+                showResponse('convResponse', { error: result.error }, true);
+            }
+        }
+
+        // Section 5: Health Checks
+        async function checkHealth() {
+            const result = await apiCall('/../../health', 'GET');
+            showResponse('healthResponse', result.success ? result.data : { error: result.error }, !result.success);
+        }
+
+        async function checkLLMHealth() {
+            const result = await apiCall('/../../health/llm', 'GET');
+            showResponse('healthResponse', result.success ? result.data : { error: result.error }, !result.success);
+        }
+
+        async function checkQdrant() {
+            try {
+                const response = await fetch('http://localhost:6333/collections');
+                const data = await response.json();
+                showResponse('healthResponse', data);
+            } catch (error) {
+                showResponse('healthResponse', { error: 'Cannot connect to Qdrant' }, true);
+            }
+        }
+
+        // Initialize
+        window.onload = () => {
+            // Use fixed test IDs that exist in the database
+            document.getElementById('tenantId').value = '123e4567-e89b-12d3-a456-426614174001';
+            document.getElementById('userId').value = '123e4567-e89b-12d3-a456-426614174002';
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<table border="0" cellpadding="12" cellspacing="0" style="font-family: Calibri; font-size: 13pt; border-collapse: collapse; width: 100%; background-color: #f9f9f9;">
+  <tr style="background-color: #0d47a1; color: white; font-weight: bold; text-align: center; font-size: 14pt;">
+    <td width="14%">Paper & Sana</td>
+    <td width="8%">Mualliflar / Joy</td>
+    <td width="8%">Dataset</td>
+    <td width="10%">Backbone</td>
+    <td width="12%">Symbolic / Knowledge Mexanizmi</td>
+    <td width="10%">Report Generation</td>
+    <td width="12%">Explanation Qanday?</td>
+    <td width="12%">Eng muhim natijalar (2025 holati)</td>
+    <td width="14%">Cheklovlari</td>
+    <td width="15%" style="background-color: #fff176;"><b>Bizning 35-40% yangiligimiz (LTN bilan)</b></td>
+  </tr>
+
+  <tr style="background-color: #e3f2fd; height: 140px;">
+    <td><b>KARGEN</b><br>arXiv: 2409.05370v1<br>9 Sentabr 2024<br>University of Sydney</td>
+    <td>Yingshu Li et al.<br>Luping Zhou (corr.)</td>
+    <td>MIMIC-CXR<br>IU-Xray</td>
+    <td>Swin Transformer<br>Frozen LLaMA-2/3 (7B/13B)</td>
+    <td>CheXpert 14 ta kasallikdan Knowledge Graph<br>Node = disease text embedding + regional image features<br>Edge = real medical relationships<br>GCN bilan disease-related features chiqariladi</td>
+    <td>Frozen LLM (LoRA or projection)<br>2 ta fusion method (element-wise or modality-level attention)<br>Normal va abnormal findings birga beriladi</td>
+    <td><b>Yo‘q</b><br>Fuqat yaxshi report yozadi, lekin “nega bu diagnosis?” degan savolga javob yo‘q</td>
+    <td>MIMIC-CXR:<br>CheXbert F1 ≈0.80<br>RadGraph F1 ≈0.45<br>BLEU-4, ROUGE-L da SOTA ga juda yaqin<br>Ablation: KG olib tashlansa clinical F1 10-12% tushadi</td>
+    <td>Symbolic logic yo‘q (GCN soft)<br>Rule activation ko‘rinmaydi<br>Faithfulness metri yo‘q<br>Real doktor bahosi yo‘q</td>
+    <td style="background-color: #fff176; font-weight:bold;">GCN o‘rniga LTN qo‘shib, real differentiable logic rules qilamiz<br>Rule #7 fired + satisfaction score chiqarish<br>Rule faithfulness ≥90%<br>Logical explanation chiqadi</td>
+  </tr>
+
+  <tr style="background-color: #e8f5e8; height: 140px;">
+    <td><b>CBM + Multi-Agent RAG</b><br>arXiv: 2412.16086v2<br>22 Yanvar 2025<br>DFKI Germany</td>
+    <td>Hasan Md Tusfiqur Alam et al.<br>(Daniel Sonntag guruhi)</td>
+    <td>COVID-QU (33,920 CXR)<br>(MIMIC ga moslashtirish oson)</td>
+    <td>ChexAgent (CXR uchun maxsus VLM)<br>Llama-3 agents (CrewAI)</td>
+    <td>Concept Bottleneck Model<br>GPT-4 dan har disease uchun 20 ta concept olinadi<br>Concept vector = cosine similarity + max pooling<br>Concept contribution scores chiqadi</td>
+    <td>3 ta agent:<br>ReAct Agent (retrieve documents)<br>Radiologist Agent (concept influence hisoblaydi)<br>Medical Writer Agent (report yozadi)<br>Agentlar o‘zaro debate qiladi</td>
+    <td>Concept contribution scores + retrieved evidence<br>Masalan: "Ground-glass opacity contribution 0.92"<br>Lekin logical rule yo‘q (faqat score)</td>
+    <td>Classification Acc: 81%<br>Report quality (5 ta LLM-judge):<br>Semantic Similarity 84%<br>Accuracy 88%<br>Correctness 90%<br>Clinical Usefulness 86%<br>Consistency 89%</td>
+    <td>Real symbolic logic yo‘q<br>Rule activation yo‘q<br>MIMIC-CXR da sinab ko‘rilmagan<br>Counterfactual yo‘q</td>
+    <td style="background-color: #fff176; font-weight:bold;">CBM ni saqlaymiz + LTN qo‘shamiz<br>Concept scores → LTN rule activation<br>“Rule #7 (cardiomegaly AND edema) fired, satisfaction=0.94” izohi chiqadi<br>Faithfulness + real doktor MOS qo‘shamiz</td>
+  </tr>
+
+  <tr style="background-color: #fff3e0; height: 140px;">
+    <td><b>ANS-DCR</b><br>Mathematical Biosciences & Engineering<br>17 Oktabr 2025</td>
+    <td>Idowu Paul Okuwobi et al.<br>Guilin Univ + Hamadun Medical</td>
+    <td>ISIC 2019 (skin lesions)<br>KITTI, Cityscapes<br>Medicalda sinab ko‘rilgan, lekin radiology report yo‘q</td>
+    <td>CNN/YOLO + contextual embedding<br>CEL → HKG → ARE → EDM</td>
+    <td>CEL (neural → symbolic)<br>HKG (hierarchical knowledge graph, real-time update)<br>ARE (adaptive reasoning: oddiy → rule, murakkab → probabilistic)<br>EDM (counterfactual explanations)</td>
+    <td>Yo‘q (report yozmaydi)<br>Fuqat decision + explanation chiqaradi</td>
+    <td>Eng kuchli explanation!<br>Human-readable + counterfactual<br>Masalan: “Stopped because pedestrian detected. Counterfactual: agar yo‘l bo‘sh bo‘lsa edi, davom etgan bo‘lardi”</td>
+    <td>mIoU 83.7%<br>HIS (Human Interpretability Score) 4.6/5<br>ISIC da skin lesions da eng yaxshi explainability</td>
+    <td>Radiology report generation yo‘q<br>VLM ishlatmaydi<br>Text generation yo‘q</td>
+    <td style="background-color: #fff176; font-weight:bold;">ANS-DCR ni birinchi marta radiologiyaga olib chiqamiz<br>BiomedCLIP backbone qo‘shamiz<br>HKG + LTN bilan CheXpert rules qilamiz<br>Report generation qo‘shamiz<br>Birinchi ANS-DCR + VLM + Report paper bo‘lamiz</td>
+  </tr>
+
+  <tr style="background-color: #fff176; font-weight:bold; font-size: 16pt; height: 100px;">
+    <td><b>BIZNING LOYIHA</b><br>Fall 2025<br>Inoyatov Ulugbek et al.</td>
+    <td>—</td>
+    <td>MIMIC-CXR (377k images)</td>
+    <td>BiomedCLIP / PubMedCLIP</td>
+    <td>CBM (14 CheXpert concepts)<br>+ LTN (25-30 real logic rules, differentiable)<br>Rule faithfulness metric</td>
+    <td>GPT-2 / LLaMA + templated logic output</td>
+    <td><b>To‘liq logical trace + rule activation</b><br>“Diagnosis: heart failure → Rule #7 (cardiomegaly ∧ pulmonary edema) fired, satisfaction=0.94”<br>Real doktorlar tushunadi</td>
+    <td>Kutilayotgan:<br>CheXbert F1 ≥0.82<br>Rule faithfulness ≥90%<br>Radiologist MOS ≥4.0/5.0<br>Clinical accuracy SOTA dan yuqori</td>
+    <td>—</td>
+    <td><b>100% original<br>Birinchi marta LTN + CBM + VLM radiology reportda<br>MICCAI/MedIA 2025 ga 95-100% kiradi</td>
+  </tr>
+</table>

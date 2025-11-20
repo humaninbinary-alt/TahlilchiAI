@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: tahlilchi-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tahlilchi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tahlilchi_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-tahlilchi_db}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tahlilchi} -d ${POSTGRES_DB:-tahlilchi_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - tahlilchi-network
+
+  # Redis for Celery broker and result backend
+  redis:
+    image: redis:7-alpine
+    container_name: tahlilchi-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - tahlilchi-network
+
+  # Celery worker for background tasks
+  celery-worker:
+    build: .
+    container_name: tahlilchi-celery-worker
+    restart: unless-stopped
+    command: celery -A app.celery_app worker --loglevel=info --concurrency=2
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://${POSTGRES_USER:-tahlilchi}:${POSTGRES_PASSWORD:-tahlilchi_dev_password}@postgres:5432/${POSTGRES_DB:-tahlilchi_db}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./app:/app/app
+      - ./data/uploads:/app/data/uploads
+    networks:
+      - tahlilchi-network
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: tahlilchi-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@tahlilchi.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - tahlilchi-network
+    profiles:
+      - dev  # Only start with --profile dev
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  tahlilchi-network:
+    driver: bridge

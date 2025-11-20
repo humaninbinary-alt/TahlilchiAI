@@ -1,0 +1,135 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.code-workspace
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+*.cover
+*.log
+.hypothesis/
+.pytest_cache/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+postgres-data/
+redis-data/
+qdrant_data/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Runtime data
+data/uploads/
+data/outputs/
+!data/uploads/.gitkeep
+!data/outputs/.gitkeep
+qdrant_data/
+postgres-data/
+redis-data/
+certs/
+
+# Alembic
+alembic/versions/*.pyc
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# Docker
+.dockerignore
+
+# Runtime data
+data/uploads/
+data/outputs/
+test_data/uploads/
+qdrant_data/
+postgres-data/
+redis-data/
+
+# Documentation build artifacts
+docs/_build/
+site/
+
+# Cache
+.cache/
+*.cache
+
+# Runtime data
+data/uploads/*
+data/outputs/*
+!data/uploads/.gitkeep
+!data/outputs/.gitkeep
+test_data/uploads/*
+!test_data/uploads/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
